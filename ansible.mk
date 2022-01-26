@@ -2,7 +2,10 @@
 ANSILINT = ansilint
 
 # executables
+ANSIBLE_GALAXY = ansible-galaxy
 ANSIBLE_LINT = ansible-lint
+ANSIBLE_PLAYBOOK = ansible-playbook
+ANSIBLE_VAULT = ansible-vault
 
 # sane defaults
 ANSISRC = $(shell find . \( -type f \) \
