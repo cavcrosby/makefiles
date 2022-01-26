@@ -10,7 +10,7 @@ PYENV = pyenv
 PYTHON = python
 
 # sane defaults
-PYTHON_VIRTUALENV_NAME = $(shell basename ${CURDIR})
+export PYTHON_VIRTUALENV_NAME = $(shell basename ${CURDIR})
 VIRTUALENV_PYTHON_VERSION = 3.9.5
 PYTHON_REQUIREMENTS_FILE_PATH = ./requirements.txt
 
