@@ -32,7 +32,7 @@ ${TARBALL}:
 
 .PHONY: ${INSTALL}
 ${INSTALL}:
->	mkdir --parents "${INSTALL_PATH}"
+>	@mkdir --parents "${INSTALL_PATH}"
 >	${INSTALL} ${src} "${INSTALL_PATH}"
 
 .PHONY: ${UNINSTALL}
