@@ -9,8 +9,12 @@ ANSIBLE_VAULT = ansible-vault
 
 # sane defaults
 ANSISRC = $(shell find . \( -type f \) \
-	-and \( -name '*.yaml' \) \
-	-or \( -name '*.yml' \) \
+	-and \
+	\( \
+		\( -name '*.yaml' \) \
+		-or \( -name '*.yml' \) \
+	\) \
+	-and ! \( -path '*.git*' \) \
 )
 
 .PHONY: ${ANSILINT}
