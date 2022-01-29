@@ -8,6 +8,8 @@ PIP = pip
 POETRY = poetry
 PYENV = pyenv
 PYTHON = python
+python_executables = \
+	${PYENV}
 
 # sane defaults
 export PYTHON_VIRTUALENV_NAME = $(shell basename ${CURDIR})
