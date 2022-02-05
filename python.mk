@@ -18,7 +18,7 @@ PYTHON_REQUIREMENTS_FILE_PATH = ./requirements.txt
 
 .PHONY: ${PYENV_VIRTUALENV}
 ${PYENV_VIRTUALENV}:
->	@${PYENV} versions | grep --quiet '${VIRTUALENV_PYTHON_VERSION}$$' || { echo "make: python \"${VIRTUALENV_PYTHON_VERSION}\" is not installed by ${PYENV}"; exit 1; }
+>	@${PYENV} versions | grep --quiet '${VIRTUALENV_PYTHON_VERSION}' || { echo "make: python \"${VIRTUALENV_PYTHON_VERSION}\" is not installed by ${PYENV}"; exit 1; }
 >	${PYENV} virtualenv "${VIRTUALENV_PYTHON_VERSION}" "${PYTHON_VIRTUALENV_NAME}"
 
 	# mainly used to enter the virtualenv when in the dir
