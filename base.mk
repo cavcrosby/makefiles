@@ -17,3 +17,6 @@ SETUP = setup
 INSTALL = install
 UNINSTALL = uninstall
 CLEAN = clean
+IMAGE = image
+DEPLOY = deploy
+DISMANTLE = dismantle
