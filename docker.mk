@@ -9,6 +9,9 @@ DOCKER_IMAGE_CLEAN = docker-image-clean
 
 # executables
 DOCKER = docker
+# MONITOR(cavcrosby): going forward, executables used in at least 2 common
+# makefiles and are not in a domain specific (e.g. ansible-playbook would be in
+# ansible.mk) makefile should go into 'base.mk'.
 GAWK = gawk
 GIT = git
 docker_executables = \
