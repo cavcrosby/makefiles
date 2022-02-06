@@ -1,3 +1,5 @@
+# recursive variables
+
 # targets
 PYENV_VIRTUALENV = pyenv-virtualenv
 PYENV_POETRY_SETUP = pyenv-poetry-setup
