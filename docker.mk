@@ -65,7 +65,7 @@ ${DISMANTLE}:
 >	${DOCKER} rm --force "${CONTAINER_NAME}"
 
 ifndef SKIP_DOCKER_NETWORK
->	${DOCKER} network rm "${CONTAINER_NETWORK}"
+>	${DOCKER} network rm --force "${CONTAINER_NETWORK}"
 endif
 
 ifndef SKIP_DOCKER_VOLUME
@@ -75,7 +75,7 @@ endif
 
 .PHONY: ${DOCKER_IMAGE_CLEAN}
 ${DOCKER_IMAGE_CLEAN}:
->	${DOCKER} rmi ${DOCKER_REPO}:test $$(${DOCKER} images \
+>	${DOCKER} rmi --force ${DOCKER_REPO}:test $$(${DOCKER} images \
 		--filter label="${DOCKER_VCS_LABEL}" \
 		--filter dangling="true" \
 		--format "{{.ID}}")
