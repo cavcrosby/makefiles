@@ -57,7 +57,7 @@ ${DOCKER_IMAGE}:
 
 # meant to be used solely for testing a image on my local development machine
 .PHONY: ${DOCKER_TEST_DEPLOY}
-${DOCKER_IMAGE_TEST_DEPLOY}:
+${DOCKER_TEST_DEPLOY}:
 >	 ${ANSIBLE_PLAYBOOK} --inventory "${ANSIBLE_INVENTORY_PATH}" "./create_container.yml" --ask-become-pass
 
 .PHONY: ${DOCKER_TEST_DEPLOY_DISMANTLE}
