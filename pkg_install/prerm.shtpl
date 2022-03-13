@@ -4,5 +4,4 @@
 
 set -e
 
-# shellcheck disable=2115
-rm --recursive --force "${_INCLUDEDIR}/${MAKEFILES_DESTDIR}"
+rm --recursive --force "${INSTALL_PATH}"

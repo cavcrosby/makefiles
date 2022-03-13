@@ -4,4 +4,5 @@
 
 set -e
 
-mkdir --parents "${DEPLOYDIR_PATH}"
+mkdir --parents "$(dirname "${INSTALL_PATH}")"
+rm --recursive --force "${INSTALL_PATH}"

@@ -2,22 +2,19 @@ include base.mk
 
 # recursive variables
 MAINTAINER_SCRIPTS_DIR_PATH = ./pkg_install
-export MAKEFILES_DESTDIR = cavcrosby-makefiles
-export DEPLOYDIR_PATH = /tmp/${MAKEFILES_DESTDIR}
-install_path = ${DESTDIR}${includedir}/${MAKEFILES_DESTDIR}
+export INSTALL_PATH = ${DESTDIR}${includedir}/cavcrosby-makefiles
 
-# The following 'su' command is used to determine the target user HOME directory
-# and is equivalent to the HOME env var.
-export _INCLUDEDIR = $$(su --login "$${SUDO_USER}" --command "echo \$${HOME}")/.local/include
+# This variable is usually a simply expanded variable, however, I wish to delay
+# eval'ing this variable in the event the 'prefix' variable changes.
+src_fpm_paths = $(shell find . \( -type f \) \
+	-and \( -name '*.mk' \) \
+    -and \( -printf '%P=${INSTALL_PATH}/%P ' \) \
+)
 
 # common vars to be used in packaging maintainer scripts
-_MAKEFILES_DESTDIR = $${MAKEFILES_DESTDIR}
-_DEPLOYDIR_PATH = $${DEPLOYDIR_PATH}
-__INCLUDEDIR = $${_INCLUDEDIR}
+_INSTALL_PATH = $${INSTALL_PATH}
 maintainer_scripts_vars = \
-    ${_MAKEFILES_DESTDIR}\
-    ${_DEPLOYDIR_PATH}\
-	${__INCLUDEDIR}
+    ${_INSTALL_PATH}
 
 # targets
 DEB = deb
@@ -39,10 +36,6 @@ executables = \
 # simply expanded variables
 src := $(shell find . \( -type f \) \
 	-and \( -name '*.mk' \) \
-)
-src_fpm_paths := $(shell find . \( -type f \) \
-	-and \( -name '*.mk' \) \
-    -and \( -printf '%P=${DEPLOYDIR_PATH}/%P ' \) \
 )
 export VERSION := $(shell ${GIT} describe --tags --abbrev=0 | sed 's/v//')
 
@@ -72,14 +65,15 @@ ${HELP}:
 
 .PHONY: ${INSTALL}
 ${INSTALL}:
->	@mkdir --parents "${install_path}"
->	${INSTALL} ${src} "${install_path}"
+>	@mkdir --parents "${INSTALL_PATH}"
+>	${INSTALL} ${src} "${INSTALL_PATH}"
 
 .PHONY: ${UNINSTALL}
 ${UNINSTALL}:
->	rm --recursive --force "${install_path}"
+>	rm --recursive --force "${INSTALL_PATH}"
 
 .PHONY: ${MAINTAINER_SCRIPTS}
+${MAINTAINER_SCRIPTS}: prefix = /usr/local
 ${MAINTAINER_SCRIPTS}: ${_maintainer_scripts}
 
 # All maintainer scripts at the moment are assumed to have no extension hence no
@@ -89,12 +83,12 @@ ${MAINTAINER_SCRIPTS_DIR_PATH}/%: ${MAINTAINER_SCRIPTS_DIR_PATH}/${shell_templat
 >   @chmod +rx "$@"
 
 .PHONY: ${DEB}
+${DEB}: prefix = /usr/local
 ${DEB}: ${MAINTAINER_SCRIPTS}
 >   ${FPM} --output-type deb \
         --version "${VERSION}" \
         --iteration "${PKG_ITERATION}" \
         --before-install "${MAINTAINER_SCRIPTS_DIR_PATH}/preinst" \
-        --after-install "${MAINTAINER_SCRIPTS_DIR_PATH}/postinst" \
         --before-remove "${MAINTAINER_SCRIPTS_DIR_PATH}/prerm" \
         ${src_fpm_paths}
 
