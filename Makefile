@@ -32,8 +32,6 @@ ENVSUBST = envsubst
 FPM = fpm
 GIT = git
 PACKAGE_CLOUD = package_cloud
-# DISCUSS(cavcrosby): some projects have 'executables' be a simply expanded variable. Is this because
-# they append additional executables from the common makefiles?
 executables = \
 	${FPM}\
 	${GIT}\
