@@ -3,8 +3,6 @@ include base.mk
 # recursive variables
 export MAKEFILES_DESTDIR = cavcrosby-makefiles
 INSTALL_PATH = ${DESTDIR}${includedir}/${MAKEFILES_DESTDIR}
-PROJECT_TARBALL = makefiles.tar.gz
-PROJECT_TARBALL_PATH = ./${PROJECT_TARBALL}
 MAINTAINER_SCRIPTS_DIR_PATH = ./pkg_install
 export DEPLOYDIR_PATH = /tmp/${MAKEFILES_DESTDIR}
 
@@ -23,7 +21,6 @@ maintainer_scripts_vars = \
 
 # targets
 DEB = deb
-TARBALL = tarball
 MAINTAINER_SCRIPTS = maintainer-scripts
 
 # to be (or can be) passed in at make runtime
@@ -59,7 +56,6 @@ _maintainer_scripts := $(maintainer_script_shell_templates:${SHELL_TEMPLATE_EXT}
 ${HELP}:
 	# inspired by the makefiles of the Linux kernel and Mercurial
 >	@echo 'Common make targets:'
->	@echo '  ${TARBALL}            - creates a tarball containing all the makefiles'
 >	@echo '  ${INSTALL}            - installs the makefiles on the current machine'
 >	@echo '  ${UNINSTALL}          - removes the makefiles that were inserted by the'
 >   @echo '                       ${INSTALL} target'
@@ -67,13 +63,6 @@ ${HELP}:
 >	@echo '  ${CLEAN}              - removes files generated from other targets'
 >	@echo 'Common make configurations (e.g. make [config]=1 [targets]):'
 >	@echo '  PKG_ITERATION            - denotes package version of makefiles (e.g 1, 2)'
-
-.PHONY: ${TARBALL}
-${TARBALL}:
->	tar zcf "${PROJECT_TARBALL_PATH}" \
-        --exclude=./Makefile \
-        --exclude-vcs-ignores \
-        ./*
 
 .PHONY: ${INSTALL}
 ${INSTALL}:
@@ -105,6 +94,5 @@ ${DEB}: ${MAINTAINER_SCRIPTS}
 
 .PHONY: ${CLEAN}
 ${CLEAN}:
->	rm --force "${PROJECT_TARBALL_PATH}"
 >	rm --force *.deb
 >	rm --force ${_maintainer_scripts}
