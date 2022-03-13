@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# prerm script for makefiles
+
+set -e
+
+# shellcheck disable=2115
+rm --recursive --force "${_INCLUDEDIR}/${MAKEFILES_DESTDIR}"

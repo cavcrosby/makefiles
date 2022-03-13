@@ -1,0 +1,7 @@
+--input-type dir
+--name cavcrosby-makefiles
+--license mit
+--architecture all
+--description "Common makefile units used throughout my personal projects"
+--url "https://github.com/cavcrosby/makefiles"
+--maintainer "Conner Crosby <conner@cavcrosby.tech>"

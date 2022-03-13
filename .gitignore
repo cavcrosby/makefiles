@@ -1,0 +1,4 @@
+# repo specific
+*.deb
+pkg_install/*
+!pkg_install/*.shtpl

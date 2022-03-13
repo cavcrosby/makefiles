@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# preinst script for makefiles
+
+set -e
+
+mkdir --parents "${DEPLOYDIR_PATH}"
