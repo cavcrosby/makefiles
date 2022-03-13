@@ -1,4 +1,4 @@
-name: Create Deb Package
+name: Upload Deb Package(s)
 
 on:
   push:
@@ -30,4 +30,5 @@ jobs:
       run: |
         package_cloud push cavcrosby/makefiles/debian/bullseye ./*.deb
         package_cloud push cavcrosby/makefiles/ubuntu/impish ./*.deb
-
+      env:
+        PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
