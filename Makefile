@@ -32,6 +32,12 @@ ENVSUBST = envsubst
 FPM = fpm
 GIT = git
 PACKAGE_CLOUD = package_cloud
+# DISCUSS(cavcrosby): some projects have 'executables' be a simply expanded variable. Is this because
+# they append additional executables from the common makefiles?
+executables = \
+	${FPM}\
+	${GIT}\
+    ${PACKAGE_CLOUD}
 
 # simply expanded variables
 src := $(shell find . \( -type f \) \
@@ -50,6 +56,7 @@ maintainer_script_shell_templates := $(shell find . -name "*${SHELL_TEMPLATE_EXT
 # Determines the maintainer script name(s) to be generated from the template(s).
 # Short hand notation for string substitution: $(text:pattern=replacement).
 _maintainer_scripts := $(maintainer_script_shell_templates:${SHELL_TEMPLATE_EXT}=)
+_check_executables := $(foreach exec,${executables},$(if $(shell command -v ${exec}),pass,$(error "No ${exec} in PATH")))
 
 # DISCUSS(cavcrosby): should variables be used at all in the help description, I
 # believe I've wanted to transition away from using them in help descriptions
