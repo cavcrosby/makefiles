@@ -1,0 +1,33 @@
+name: Create Deb Package
+
+on:
+  push:
+    branches:
+      - "!*"
+    tags:
+      - "v*"
+
+jobs:
+  upload-packages:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install --assume-yes \
+          gem
+        sudo gem install \
+          fpm \
+          package_cloud
+
+    - name: Build deb
+      run: |
+        make deb
+
+    - name: Upload deb to packagecloud
+      run: |
+        package_cloud push cavcrosby/makefiles/debian/bullseye ./*.deb
+        package_cloud push cavcrosby/makefiles/ubuntu/impish ./*.deb
+
