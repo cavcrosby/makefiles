@@ -1,10 +1,10 @@
 include base.mk
 
 # recursive variables
-export MAKEFILES_DESTDIR = cavcrosby-makefiles
-INSTALL_PATH = ${DESTDIR}${includedir}/${MAKEFILES_DESTDIR}
 MAINTAINER_SCRIPTS_DIR_PATH = ./pkg_install
+export MAKEFILES_DESTDIR = cavcrosby-makefiles
 export DEPLOYDIR_PATH = /tmp/${MAKEFILES_DESTDIR}
+install_path = ${DESTDIR}${includedir}/${MAKEFILES_DESTDIR}
 
 # The following 'su' command is used to determine the target user HOME directory
 # and is equivalent to the HOME env var.
@@ -66,12 +66,12 @@ ${HELP}:
 
 .PHONY: ${INSTALL}
 ${INSTALL}:
->	@mkdir --parents "${INSTALL_PATH}"
->	${INSTALL} ${src} "${INSTALL_PATH}"
+>	@mkdir --parents "${install_path}"
+>	${INSTALL} ${src} "${install_path}"
 
 .PHONY: ${UNINSTALL}
 ${UNINSTALL}:
->	rm --recursive --force "${INSTALL_PATH}"
+>	rm --recursive --force "${install_path}"
 
 .PHONY: ${MAINTAINER_SCRIPTS}
 ${MAINTAINER_SCRIPTS}: ${_maintainer_scripts}
@@ -80,7 +80,7 @@ ${MAINTAINER_SCRIPTS}: ${_maintainer_scripts}
 # wildcard var on the target.
 ${MAINTAINER_SCRIPTS_DIR_PATH}/%: ${MAINTAINER_SCRIPTS_DIR_PATH}/${shell_template_wildcard}
 >	${ENVSUBST} '${maintainer_scripts_vars}' < "$<" > "$@"
->   chmod +rx "$@"
+>   @chmod +rx "$@"
 
 .PHONY: ${DEB}
 ${DEB}: ${MAINTAINER_SCRIPTS}
