@@ -21,6 +21,7 @@ maintainer_scripts_vars = \
 
 # targets
 DEB = deb
+PUBLISH_DEB = publish-deb
 MAINTAINER_SCRIPTS = maintainer-scripts
 
 # to be (or can be) passed in at make runtime
@@ -30,6 +31,7 @@ PKG_ITERATION = 1
 ENVSUBST = envsubst
 FPM = fpm
 GIT = git
+PACKAGE_CLOUD = package_cloud
 
 # simply expanded variables
 src := $(shell find . \( -type f \) \
@@ -91,6 +93,11 @@ ${DEB}: ${MAINTAINER_SCRIPTS}
         --after-install "${MAINTAINER_SCRIPTS_DIR_PATH}/postinst" \
         --before-remove "${MAINTAINER_SCRIPTS_DIR_PATH}/prerm" \
         ${src_fpm_paths}
+
+.PHONY: ${PUBLISH_DEB}
+${PUBLISH_DEB}:
+>   ${PACKAGE_CLOUD} push cavcrosby/makefiles/debian/bullseye ./*.deb
+>   ${PACKAGE_CLOUD} push cavcrosby/makefiles/ubuntu/impish ./*.deb
 
 .PHONY: ${CLEAN}
 ${CLEAN}:
