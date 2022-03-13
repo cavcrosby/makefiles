@@ -20,3 +20,8 @@ CLEAN = clean
 IMAGE = image
 DEPLOY = deploy
 DISMANTLE = dismantle
+
+# executables
+GIT = git
+base_executables = \
+	${GIT}

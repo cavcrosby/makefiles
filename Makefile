@@ -30,12 +30,11 @@ PKG_ITERATION = 1
 # executables
 ENVSUBST = envsubst
 FPM = fpm
-GIT = git
 PACKAGE_CLOUD = package_cloud
 executables = \
 	${FPM}\
-	${GIT}\
-    ${PACKAGE_CLOUD}
+    ${PACKAGE_CLOUD}\
+    ${base_executables}
 
 # simply expanded variables
 src := $(shell find . \( -type f \) \

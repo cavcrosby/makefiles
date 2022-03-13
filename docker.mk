@@ -13,11 +13,10 @@ DOCKER = docker
 # makefiles and are not in a domain specific (e.g. ansible-playbook would be in
 # ansible.mk) makefile should go into 'base.mk'.
 GAWK = gawk
-GIT = git
 docker_executables = \
 	${DOCKER}\
-	${GIT}\
-	${GAWK}
+	${GAWK}\
+	${base_executables}
 
 # sane defaults
 export CONTAINER_NAME = jenkins-base
