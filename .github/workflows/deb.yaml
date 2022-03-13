@@ -17,7 +17,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install --assume-yes \
-          gem
+          gem \
+          ruby-dev
         sudo gem install \
           fpm \
           package_cloud
