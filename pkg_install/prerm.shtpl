@@ -5,3 +5,4 @@
 set -e
 
 rm --recursive --force "${INSTALL_PATH}"
+rm --force "${MAKEFILES_VARS_PATH}"

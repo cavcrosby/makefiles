@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# postinst script for makefiles
+
+set -e
+
+cat << '_EOF_' > "${MAKEFILES_VARS_PATH}"
+#
+#
+#
+
+CAVCROSBY_MAKEFILES_PATH="${INSTALL_PATH}"
+_EOF_

@@ -1,6 +1,7 @@
 include base.mk
 
 # recursive variables
+export MAKEFILES_VARS_PATH = /etc/profile.d/cavcrosby-makefiles
 MAINTAINER_SCRIPTS_DIR_PATH = ./pkg_install
 export INSTALL_PATH = ${DESTDIR}${includedir}/cavcrosby-makefiles
 
@@ -13,8 +14,10 @@ src_fpm_paths = $(shell find . \( -type f \) \
 
 # common vars to be used in packaging maintainer scripts
 _INSTALL_PATH = $${INSTALL_PATH}
+_MAKEFILES_VARS_PATH = $${MAKEFILES_VARS_PATH}
 maintainer_scripts_vars = \
-    ${_INSTALL_PATH}
+    ${_INSTALL_PATH}\
+    ${_MAKEFILES_VARS_PATH}
 
 # targets
 DEB = deb
@@ -89,6 +92,7 @@ ${DEB}: ${MAINTAINER_SCRIPTS}
         --version "${VERSION}" \
         --iteration "${PKG_ITERATION}" \
         --before-install "${MAINTAINER_SCRIPTS_DIR_PATH}/preinst" \
+        --after-install "${MAINTAINER_SCRIPTS_DIR_PATH}/postinst" \
         --before-remove "${MAINTAINER_SCRIPTS_DIR_PATH}/prerm" \
         ${src_fpm_paths}
 
