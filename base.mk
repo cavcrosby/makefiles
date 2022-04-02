@@ -19,6 +19,7 @@ HELP = help
 SETUP = setup
 INSTALL = install
 UNINSTALL = uninstall
+TEST = test
 CLEAN = clean
 IMAGE = image
 DEPLOY = deploy
