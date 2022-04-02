@@ -4,6 +4,9 @@
 
 # recursive variables
 SHELL = /usr/bin/sh
+TRUTHY_VALUES = \
+    true\
+    1
 
 # gnu install directory variables
 prefix = ${HOME}/.local

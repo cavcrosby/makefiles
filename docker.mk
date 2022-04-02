@@ -56,10 +56,13 @@ ${DOCKER_IMAGE}:
         ${DOCKER_BUILD_OPTS} \
         .
 
-# meant to be used solely for testing a image on my local development machine
 .PHONY: ${DOCKER_TEST_DEPLOY}
 ${DOCKER_TEST_DEPLOY}:
+ifneq ($(findstring ${CONTINUOUS_INTEGRATION}, ${TRUTHY_VALUES}),)
+>	 ${ANSIBLE_PLAYBOOK} --inventory "${ANSIBLE_INVENTORY_PATH}" "./create_container.yml"
+else
 >	 ${ANSIBLE_PLAYBOOK} --inventory "${ANSIBLE_INVENTORY_PATH}" "./create_container.yml" --ask-become-pass
+endif
 
 .PHONY: ${DOCKER_TEST_DEPLOY_DISMANTLE}
 ${DISMANTLE}:
