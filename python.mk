@@ -46,7 +46,7 @@ ${PYENV_POETRY_SETUP}: ${PYENV_VIRTUALENV}
 	# --no-root because we only want to install dependencies. 'pyenv exec' is needed
 	# as poetry is installed into a virtualenv bin dir that is not added to the
 	# current shell PATH.
->	${PYENV} exec ${POETRY} install --no-root || { echo "${POETRY} failed to install project dependencies"; exit 1; }
+>	${PYENV} exec ${POETRY} install --no-root || { echo "make: ${POETRY} failed to install project dependencies"; exit 1; }
 >	unset PYENV_VERSION
 
 .PHONY: ${PYENV_REQUIREMENTS_SETUP}
