@@ -5,6 +5,7 @@ DOCKER_ANSIBLE_INVENTORY = docker-ansible-inventory
 DOCKER_IMAGE = docker-image
 DOCKER_TEST_DEPLOY = docker-test-deploy
 DOCKER_TEST_DEPLOY_DISMANTLE = docker-test-deploy-dismantle
+DOCKER_PUBLISH = docker-publish
 DOCKER_IMAGE_CLEAN = docker-image-clean
 
 # executables
@@ -31,15 +32,12 @@ DOCKER_VCS_LABEL = tech.cavcrosby.jenkins.base.vcs-repo=https://github.com/cavcr
 # DISCUSS(cavcrosby): I'd like to replace 'ifdef' with an expression that
 # determines if the env var contains a truthy value (e.g. 1, true).
 ifdef IMAGE_RELEASE_BUILD
-	DOCKER_BUILD_OPTS = \
-		--tag \
+	DOCKER_TARGET_IMAGES = \
 		${DOCKER_REPO}:${DOCKER_CONTEXT_TAG} \
-		--tag \
 		${DOCKER_REPO}:${DOCKER_LATEST_VERSION_TAG}
 else
 	DOCKER_CONTEXT_TAG = test
-	DOCKER_BUILD_OPTS = \
-		--tag \
+	DOCKER_TARGET_IMAGES = \
 		${DOCKER_REPO}:${DOCKER_CONTEXT_TAG}
 endif
 export DOCKER_CONTEXT_TAG
@@ -53,7 +51,7 @@ ${DOCKER_IMAGE}:
 >	${DOCKER} build \
         --build-arg BRANCH="$$(${GIT} branch --show-current)" \
         --build-arg COMMIT="$$(${GIT} show --format=%h --no-patch)" \
-        ${DOCKER_BUILD_OPTS} \
+        $(addprefix --tag=,${DOCKER_TARGET_IMAGES}) \
         .
 
 .PHONY: ${DOCKER_TEST_DEPLOY}
@@ -76,6 +74,13 @@ ifndef SKIP_DOCKER_VOLUME
 >	${DOCKER} volume rm --force "$$(echo "${CONTAINER_VOLUME}" \
 		| ${GAWK} --field-separator ':' '{print $$1}')"
 endif
+
+.PHONY: ${DOCKER_PUBLISH}
+${DOCKER_PUBLISH}:
+>	@for docker_target_image in ${DOCKER_TARGET_IMAGES}; do \
+>		echo ${DOCKER} push "$${docker_target_image}"; \
+>		${DOCKER} push "$${docker_target_image}"; \
+>	done
 
 .PHONY: ${DOCKER_IMAGE_CLEAN}
 ${DOCKER_IMAGE_CLEAN}:

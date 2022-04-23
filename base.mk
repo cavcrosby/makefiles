@@ -24,6 +24,7 @@ CLEAN = clean
 IMAGE = image
 DEPLOY = deploy
 DISMANTLE = dismantle
+PUBLISH = publish
 
 # executables
 GIT = git
