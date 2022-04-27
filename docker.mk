@@ -29,8 +29,6 @@ DOCKER_CONTEXT_TAG = latest
 DOCKER_LATEST_VERSION_TAG = $(shell ${GIT} describe --tags --abbrev=0)
 DOCKER_VCS_LABEL = tech.cavcrosby.jenkins.base.vcs-repo=https://github.com/cavcrosby/jenkins-docker-base
 
-# DISCUSS(cavcrosby): I'd like to replace 'ifdef' with an expression that
-# determines if the env var contains a truthy value (e.g. 1, true).
 ifdef IMAGE_RELEASE_BUILD
 	DOCKER_TARGET_IMAGES = \
 		${DOCKER_REPO}:${DOCKER_CONTEXT_TAG} \

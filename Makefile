@@ -51,9 +51,6 @@ maintainer_script_shell_templates := $(shell find . -name "*${SHELL_TEMPLATE_EXT
 _maintainer_scripts := $(maintainer_script_shell_templates:${SHELL_TEMPLATE_EXT}=)
 _check_executables := $(foreach exec,${executables},$(if $(shell command -v ${exec}),pass,$(error "No ${exec} in PATH")))
 
-# DISCUSS(cavcrosby): should variables be used at all in the help description, I
-# believe I've wanted to transition away from using them in help descriptions
-# that way altering the variables doesn't change the help description.
 .PHONY: ${HELP}
 ${HELP}:
 	# inspired by the makefiles of the Linux kernel and Mercurial
