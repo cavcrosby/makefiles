@@ -29,7 +29,7 @@ DOCKER_CONTEXT_TAG = latest
 DOCKER_LATEST_VERSION_TAG = $(shell ${GIT} describe --tags --abbrev=0)
 DOCKER_VCS_LABEL = tech.cavcrosby.jenkins.base.vcs-repo=https://github.com/cavcrosby/jenkins-docker-base
 
-ifdef IMAGE_RELEASE_BUILD
+ifneq ($(findstring ${IMAGE_RELEASE_BUILD},${TRUTHY_VALUES}),)
 	DOCKER_TARGET_IMAGES = \
 		${DOCKER_REPO}:${DOCKER_CONTEXT_TAG} \
 		${DOCKER_REPO}:${DOCKER_LATEST_VERSION_TAG}
@@ -54,7 +54,7 @@ ${DOCKER_IMAGE}:
 
 .PHONY: ${DOCKER_TEST_DEPLOY}
 ${DOCKER_TEST_DEPLOY}:
-ifneq ($(findstring ${CONTINUOUS_INTEGRATION}, ${TRUTHY_VALUES}),)
+ifneq ($(findstring ${CONTINUOUS_INTEGRATION},${TRUTHY_VALUES}),)
 >	 ${ANSIBLE_PLAYBOOK} --inventory "${ANSIBLE_INVENTORY_PATH}" "./create_container.yml"
 else
 >	 ${ANSIBLE_PLAYBOOK} --inventory "${ANSIBLE_INVENTORY_PATH}" "./create_container.yml" --ask-become-pass
