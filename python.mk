@@ -4,6 +4,7 @@
 PYENV_VIRTUALENV = pyenv-virtualenv
 PYENV_POETRY_SETUP = pyenv-poetry-setup
 PYENV_REQUIREMENTS_SETUP = pyenv-requirements-setup
+GENERATE_CODIUM_WORKSPACE_SETTINGS = generate-codium-workspace-settings
 
 # executables
 PIP = pip
@@ -17,6 +18,46 @@ python_executables = \
 export PYTHON_VIRTUALENV_NAME = $(shell basename ${CURDIR})
 VIRTUALENV_PYTHON_VERSION = 3.9.5
 PYTHON_REQUIREMENTS_FILE_PATH = ./requirements.txt
+
+define GEN_WORKSPACE_SETTINGS_SCRIPT =
+cat << _EOF_
+# Standard Library Imports
+import collections
+import json
+
+# Third Party Imports
+
+# Local Application Imports
+
+
+with open("${WORKSPACE_SETTINGS_CONFIG_PATH}", "r") as file_target:
+	try:
+		workspace_settings = json.load(file_target)
+	except json.decoder.JSONDecodeError:
+		# in the event the settings file is empty
+		workspace_settings = json.loads("{}")
+
+# inspired by:
+# https://stackoverflow.com/questions/1024847/how-can-i-add-new-keys-to-a-dictionary#answer-1165836
+workspace_settings.update(
+	{
+		"ansible.ansible.path": "${PYENV_VIRTUAL_ENV}/bin/ansible",
+		"ansible.ansibleLint.enabled": True,
+		"ansible.ansibleLint.path": "${PYENV_VIRTUAL_ENV}/bin/ansible-lint",
+		"ansible.python.interpreterPath": "${PYENV_VIRTUAL_ENV}/bin/python",
+	}
+)
+ordered_workspace_settings = collections.OrderedDict(
+	workspace_settings.items()
+)
+
+with open("${WORKSPACE_SETTINGS_CONFIG_PATH}", "w") as file_target:
+	json.dump(ordered_workspace_settings, file_target, indent=4)
+	file_target.write("\n")
+
+_EOF_
+endef
+export GEN_WORKSPACE_SETTINGS_SCRIPT
 
 .PHONY: ${PYENV_VIRTUALENV}
 ${PYENV_VIRTUALENV}:
@@ -57,3 +98,14 @@ ${PYENV_REQUIREMENTS_SETUP}: ${PYENV_VIRTUALENV}
 >	${PYTHON} -m ${PIP} install --requirement "${PYTHON_REQUIREMENTS_FILE_PATH}"
 
 >	unset PYENV_VERSION
+
+.PHONY: ${GENERATE_CODIUM_WORKSPACE_SETTINGS}
+${GENERATE_CODIUM_WORKSPACE_SETTINGS}: WORKSPACE_CONFIGS_PATH = ./.vscode
+${GENERATE_CODIUM_WORKSPACE_SETTINGS}: WORKSPACE_SETTINGS_CONFIG_PATH = ${WORKSPACE_CONFIGS_PATH}/settings.json
+${GENERATE_CODIUM_WORKSPACE_SETTINGS}: TEMP_PYSCRIPT := $(shell mktemp)
+${GENERATE_CODIUM_WORKSPACE_SETTINGS}:
+>	mkdir --parents "${WORKSPACE_CONFIGS_PATH}"
+>   touch "${WORKSPACE_SETTINGS_CONFIG_PATH}"
+>
+>	eval "$${GEN_WORKSPACE_SETTINGS_SCRIPT}" > "${TEMP_PYSCRIPT}"
+>	${PYTHON} "${TEMP_PYSCRIPT}"
