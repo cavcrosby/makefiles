@@ -1,4 +1,4 @@
-# recursive variables
+# recursively expanded variables
 
 # targets
 PYENV_VIRTUALENV = pyenv-virtualenv

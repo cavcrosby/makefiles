@@ -1,6 +1,6 @@
 include base.mk
 
-# recursive variables
+# recursively expanded variables
 export MAKEFILES_VARS_PATH = /etc/profile.d/cavcrosby-makefiles
 MAINTAINER_SCRIPTS_DIR_PATH = ./pkg_install
 export INSTALL_PATH = ${DESTDIR}${includedir}/cavcrosby-makefiles
