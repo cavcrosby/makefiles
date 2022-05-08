@@ -64,11 +64,11 @@ endif
 ${DOCKER_TEST_DEPLOY_DISMANTLE}:
 >	${DOCKER} rm --force "${CONTAINER_NAME}"
 
-ifndef SKIP_DOCKER_NETWORK
+ifneq ($(findstring ${SKIP_DOCKER_NETWORK},${TRUTHY_VALUES}),)
 >	${DOCKER} network rm --force "${CONTAINER_NETWORK}"
 endif
 
-ifndef SKIP_DOCKER_VOLUME
+ifneq ($(findstring ${SKIP_DOCKER_VOLUME},${TRUTHY_VALUES}),)
 >	${DOCKER} volume rm --force "$$(echo "${CONTAINER_VOLUME}" \
 		| ${GAWK} --field-separator ':' '{print $$1}')"
 endif
