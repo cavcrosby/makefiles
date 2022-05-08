@@ -34,7 +34,7 @@ with open("${WORKSPACE_SETTINGS_CONFIG_PATH}", "r") as file_target:
 	try:
 		workspace_settings = json.load(file_target)
 	except json.decoder.JSONDecodeError:
-		# in the event the settings file is empty
+		# in the event the settings file is empty, or the json is invalid
 		workspace_settings = json.loads("{}")
 
 # inspired by:
