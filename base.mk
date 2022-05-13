@@ -27,6 +27,7 @@ DISMANTLE = dismantle
 PUBLISH = publish
 
 # executables
+ENVSUBST = envsubst
 GIT = git
 base_executables = \
 	${GIT}

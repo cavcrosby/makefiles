@@ -28,7 +28,6 @@ MAINTAINER_SCRIPTS = maintainer-scripts
 PKG_ITERATION = 1
 
 # executables
-ENVSUBST = envsubst
 FPM = fpm
 PACKAGE_CLOUD = package_cloud
 executables = \
