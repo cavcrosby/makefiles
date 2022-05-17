@@ -95,7 +95,7 @@ ${DEB}: ${MAINTAINER_SCRIPTS}
 .PHONY: ${PUBLISH_DEB}
 ${PUBLISH_DEB}:
 >   ${PACKAGE_CLOUD} push cavcrosby/makefiles/debian/bullseye ./*.deb
->   ${PACKAGE_CLOUD} push cavcrosby/makefiles/ubuntu/impish ./*.deb
+>   ${PACKAGE_CLOUD} push cavcrosby/makefiles/ubuntu/jammy ./*.deb
 >   ${PACKAGE_CLOUD} push cavcrosby/makefiles/ubuntu/focal ./*.deb
 
 .PHONY: ${CLEAN}
