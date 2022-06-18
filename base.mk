@@ -25,6 +25,7 @@ IMAGE = image
 DEPLOY = deploy
 DISMANTLE = dismantle
 PUBLISH = publish
+LINT = lint
 
 # executables
 ENVSUBST = envsubst
