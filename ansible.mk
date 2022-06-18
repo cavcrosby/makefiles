@@ -1,8 +1,5 @@
 # recursively expanded variables
 
-# targets
-ANSILINT = ansilint
-
 # executables
 ANSIBLE_GALAXY = ansible-galaxy
 ANSIBLE_LINT = ansible-lint
