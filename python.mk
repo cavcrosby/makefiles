@@ -17,7 +17,6 @@ python_executables = \
 
 # sane defaults
 export PYTHON_VIRTUALENV_NAME = $(shell basename ${CURDIR})
-PYENV_SETUP = true
 PYTHON_REQUIREMENTS_FILE_PATH = ./requirements.txt
 
 define GEN_WORKSPACE_SETTINGS_SCRIPT =
@@ -70,11 +69,8 @@ ${PYENV_VIRTUALENV}:
 
 .PHONY: ${PYENV_POETRY_SETUP}
 ${PYENV_POETRY_SETUP}: VIRTUALENV_PYTHON_VERSION := $(shell pyver_selector.py)
-${PYENV_POETRY_SETUP}:
-ifneq ($(findstring ${PYENV_SETUP},${TRUTHY_VALUES}),)
->	${MAKE} ${PYENV_VIRTUALENV}
+${PYENV_POETRY_SETUP}: ${PYENV_VIRTUALENV}
 >	export PYENV_VERSION="${PYTHON_VIRTUALENV_NAME}"
-endif
 
 	# to ensure the most current versions of dependencies can be installed
 >	${PYTHON} -m ${PIP} install --upgrade ${PIP}
@@ -85,7 +81,6 @@ endif
 	# https://stackoverflow.com/questions/69836936/poetry-attributeerror-link-object-has-no-attribute-name#answer-69987715
 >	${PYTHON} -m ${PIP} install poetry-core==1.0.4
 
-ifneq ($(findstring ${PYENV_SETUP},${TRUTHY_VALUES}),)
 	# Needed to make sure poetry doesn't panic and create a virtualenv, redirecting
 	# dependencies into the wrong virtualenv.
 	#
@@ -99,10 +94,6 @@ ifneq ($(findstring ${PYENV_SETUP},${TRUTHY_VALUES}),)
 >	${PYENV} exec ${POETRY} install --no-root || { echo "make: ${POETRY} failed to install project dependencies"; exit 1; }
 >	${PYENV} rehash
 >	unset PYENV_VERSION
-else
->	${POETRY} config virtualenvs.create true --local
->	${POETRY} install --no-root || { echo "make: ${POETRY} failed to install project dependencies"; exit 1; }
-endif
 
 .PHONY: ${PYENV_REQUIREMENTS_SETUP}
 ${PYENV_REQUIREMENTS_SETUP}: ${PYENV_VIRTUALENV}
