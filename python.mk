@@ -1,7 +1,11 @@
 # recursively expanded variables
+VIRTUALENV_PYTHON_VERSION = $(eval VIRTUALENV_PYTHON_VERSION := $$(shell pyver_selector 2> /dev/null))${VIRTUALENV_PYTHON_VERSION}
 
 # targets
+PRE_PYENV_SETUP = pre-pyenv-setup
 PYENV_VIRTUALENV = pyenv-virtualenv
+PYENV_POETRY_VIRTUALENV_SETUP = pyenv-poetry-virtualenv-setup
+PYENV_REQUIREMENTS_VIRTUALENV_SETUP = pyenv-requirements-virtualenv-setup
 PYENV_POETRY_SETUP = pyenv-poetry-setup
 PYENV_REQUIREMENTS_SETUP = pyenv-requirements-setup
 GET_VIRTUALENV_PYTHON_VERSION = get-virtualenv-python-version
@@ -59,6 +63,17 @@ _EOF_
 endef
 export GEN_WORKSPACE_SETTINGS_SCRIPT
 
+.PHONY: ${PRE_PYENV_SETUP}
+${PRE_PYENV_SETUP}:
+>	rm --force "./.python-version"
+
+	# MONITOR(cavcrosby): 'pyenv uninstall' does not remove the underlying target,
+	# hence this workaround is temporarily needed. For reference on the related GitHub
+	# issue:
+	# https://github.com/pyenv/pyenv-virtualenv/issues/436 
+>	rm --recursive --force "$$(readlink ${PYENV_PREFIX_PATH})" \
+>		&& ${PYENV} uninstall --force "${PYTHON_VIRTUALENV_NAME}"
+
 .PHONY: ${PYENV_VIRTUALENV}
 ${PYENV_VIRTUALENV}:
 >	@${PYENV} versions | grep --quiet '${VIRTUALENV_PYTHON_VERSION}' || { echo "make: python \"${VIRTUALENV_PYTHON_VERSION}\" is not installed by ${PYENV}"; exit 1; }
@@ -67,11 +82,8 @@ ${PYENV_VIRTUALENV}:
 	# mainly used to enter the virtualenv when in the dir
 >	${PYENV} local "${PYTHON_VIRTUALENV_NAME}"
 
-.PHONY: ${PYENV_POETRY_SETUP}
-${PYENV_POETRY_SETUP}: VIRTUALENV_PYTHON_VERSION := $(shell pyver_selector.py)
-${PYENV_POETRY_SETUP}: ${PYENV_VIRTUALENV}
->	export PYENV_VERSION="${PYTHON_VIRTUALENV_NAME}"
-
+.PHONY: ${PYENV_POETRY_VIRTUALENV_SETUP}
+${PYENV_POETRY_VIRTUALENV_SETUP}:
 	# to ensure the most current versions of dependencies can be installed
 >	${PYTHON} -m ${PIP} install --upgrade ${PIP}
 >	${PYTHON} -m ${PIP} install ${POETRY}==1.1.7
@@ -86,23 +98,36 @@ ${PYENV_POETRY_SETUP}: ${PYENV_VIRTUALENV}
 	#
 	# TODO(cavcrosby): change to 'poetry config <key> <value> --local' format once
 	# my repositories converge on localizing poetry configs to themselves.
->	${PYENV} exec ${POETRY} config virtualenvs.create false
+>	${POETRY} config virtualenvs.create false
 
-	# --no-root because we only want to install dependencies. 'pyenv exec' is needed
-	# as poetry is installed into a virtualenv bin dir that is not added to the
-	# current shell PATH.
->	${PYENV} exec ${POETRY} install --no-root || { echo "make: ${POETRY} failed to install project dependencies"; exit 1; }
+	# --no-root because we only want to install dependencies
+>	${POETRY} install --no-root || { echo "make: ${POETRY} failed to install project dependencies"; exit 1; }
 >	${PYENV} rehash
->	unset PYENV_VERSION
 
-.PHONY: ${PYENV_REQUIREMENTS_SETUP}
-${PYENV_REQUIREMENTS_SETUP}: ${PYENV_VIRTUALENV}
->	export PYENV_VERSION="${PYTHON_VIRTUALENV_NAME}"
-
+.PHONY: ${PYENV_REQUIREMENTS_VIRTUALENV_SETUP}
+${PYENV_REQUIREMENTS_VIRTUALENV_SETUP}:
 >	${PYTHON} -m ${PIP} install --upgrade ${PIP}
 >	${PYTHON} -m ${PIP} install --requirement "${PYTHON_REQUIREMENTS_FILE_PATH}"
 
->	unset PYENV_VERSION
+.PHONY: ${PYENV_POETRY_SETUP}
+${PYENV_POETRY_SETUP}: PYENV_PREFIX_PATH := ${PYENV_ROOT}/versions/${PYTHON_VIRTUALENV_NAME}
+${PYENV_POETRY_SETUP}: ${PRE_PYENV_SETUP} ${PYENV_VIRTUALENV}
+	# If VIRTUALENV_PYTHON_VERSION is 'system', then PYENV_PREFIX_PATH will just be
+	# a normal dir.
+>	PYENV_VIRTUAL_ENV="$$(readlink ${PYENV_PREFIX_PATH} || echo ${PYENV_PREFIX_PATH})" \
+		&& export PYENV_VIRTUAL_ENV \
+		&& VIRTUAL_ENV="$$(readlink ${PYENV_PREFIX_PATH} || echo ${PYENV_PREFIX_PATH})" \
+		&& export VIRTUAL_ENV \
+		&& ${MAKE} ${PYENV_POETRY_VIRTUALENV_SETUP}
+
+.PHONY: ${PYENV_REQUIREMENTS_SETUP}
+${PYENV_REQUIREMENTS_SETUP}: PYENV_PREFIX_PATH := ${PYENV_ROOT}/versions/${PYTHON_VIRTUALENV_NAME}
+${PYENV_REQUIREMENTS_SETUP}: ${PRE_PYENV_SETUP} ${PYENV_VIRTUALENV}
+>	PYENV_VIRTUAL_ENV="$$(readlink ${PYENV_PREFIX_PATH} || echo ${PYENV_PREFIX_PATH})" \
+		&& export PYENV_VIRTUAL_ENV \
+		&& VIRTUAL_ENV="$$(readlink ${PYENV_PREFIX_PATH} || echo ${PYENV_PREFIX_PATH})" \
+		&& export VIRTUAL_ENV \
+		&& ${MAKE} ${PYENV_REQUIREMENTS_VIRTUALENV_SETUP}
 
 .PHONY: ${GENERATE_CODIUM_WORKSPACE_SETTINGS}
 ${GENERATE_CODIUM_WORKSPACE_SETTINGS}: WORKSPACE_CONFIGS_PATH = ./.vscode
