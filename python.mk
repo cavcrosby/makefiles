@@ -92,6 +92,7 @@ ${PYENV_POETRY_VIRTUALENV_SETUP}:
 	# package installs. For reference:
 	# https://stackoverflow.com/questions/69836936/poetry-attributeerror-link-object-has-no-attribute-name#answer-69987715
 >	${PYTHON} -m ${PIP} install poetry-core==1.0.4
+>	${PYENV} rehash
 
 	# Needed to make sure poetry doesn't panic and create a virtualenv, redirecting
 	# dependencies into the wrong virtualenv.
